@@ -1,18 +1,18 @@
 module Data.Gooey exposing (Gooey)
 
-import Data.Age exposing (Age, ageDecoder)
-import Data.BodyType exposing (BodyType, bodyTypeDecoder)
-import Data.Disposition exposing (Disposition, dispositionDecoder)
-import Data.ParentID exposing (ParentID)
-import Data.TokenID exposing (TokenID, tokenIDDecoder)
-import Json.Decode as Decode
-    exposing
-        ( Decoder
-        , bool
-        , int
-        , string
-        )
-import Json.Decode.Pipeline exposing (optional, required)
+import Data.Gooey.Attribute.Age exposing (Age)
+import Data.Gooey.Attribute.BodyType exposing (BodyType)
+import Data.Gooey.Attribute.Disposition exposing (Disposition)
+import Data.Gooey.Attribute.Generation exposing (Generation)
+import Data.Gooey.Attribute.Health exposing (Health)
+import Data.Gooey.Attribute.IsAwake exposing (IsAwake)
+import Data.Gooey.Attribute.IsBuried exposing (IsBuried)
+import Data.Gooey.Attribute.MitosisCredits exposing (MitosisCredits)
+import Data.Gooey.Attribute.ParentID exposing (ParentID)
+import Data.Gooey.TokenID exposing (TokenID, tokenIDDecoder)
+import Data.Gooey.Trait exposing (Trait, traitDecoder)
+import Json.Decode as Decode exposing (Decoder, string)
+import Json.Decode.Pipeline exposing (required)
 
 
 
@@ -33,13 +33,13 @@ type alias Gooey =
     , name : String
     , description : String
     , image : String
-    , generation : Int
-    , health : Int
+    , generation : Generation
+    , health : Health
     , disposition : Disposition
     , age : Age
-    , isAwake : Bool
-    , isBuried : Bool
-    , mitosisCredits : Int
+    , isAwake : IsAwake
+    , isBuried : IsBuried
+    , mitosisCredits : MitosisCredits
     , parentID : ParentID
     , body : BodyType
     }
@@ -49,40 +49,14 @@ type alias Gooey =
 --  Decoders
 
 
-decodeGooey : Decoder Gooey
-decodeGooey =
-    Decode.succeed Gooey
+decodeGooeyIntermediate : Decoder GooeyIntermediate
+decodeGooeyIntermediate =
+    Decode.succeed GooeyIntermediate
         |> required "tokenID" tokenIDDecoder
         |> required "name" string
         |> required "description" string
         |> required "image" string
-        |> required "generation" (customDecoder int)
-        |> required "health" (customDecoder int)
-        |> required "disposition" (customDecoder dispositionDecoder)
-        |> required "age" (customDecoder ageDecoder)
-        |> required "isAwake" (customDecoder bool)
-        |> required "isBuried" (customDecoder bool)
-        |> required "mitosisCredits" (customDecoder int)
-        |> required "parentID" (customDecoder parentIDDecoder)
-        |> optional "body" (customDecoder bodyDecoder) Unrevealed
+        |> required "attributes" (Decode.list traitDecoder)
 
 
-
--- Helper function to retrieve an attribute's value from a list of attributes
--- getAttribute : List (String, Value) -> String -> Result String Value
--- getAttribute attributes name =
---     attributes
---         |> List.filter ((n, _) -> n == name)
---         |> List.head
---         |> Result.fromMaybe (Err ("Attribute " ++ name ++ " not found"))
--- Custom decoder to retrieve the value of a specific attribute
-
-
-customDecoder : (List ( String, Value ) -> Result String a) -> Decoder a
-customDecoder decoder =
-    field "attributes" (list (tuple2 string value))
-        |> andThen
-            (\attributes ->
-                decoder attributes
-                    |> Result.mapError (\err -> "attribute error: " ++ err)
-            )
+mapIntermediateToGooey : GooeyIntermediate -> Gooey

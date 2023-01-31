@@ -1,6 +1,6 @@
-module Data.ParentID exposing (ParentID, parentIDDecoder)
+module Data.Gooey.Attribute.ParentID exposing (ParentID, parentIDDecoder)
 
-import Data.TokenID exposing (TokenID, tokenIDDecoder)
+import Data.Gooey.TokenID exposing (TokenID, tokenIDDecoder)
 import Json.Decode as Decode exposing (Decoder, int)
 
 

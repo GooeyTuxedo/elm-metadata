@@ -1,4 +1,4 @@
-module Data.BodyType exposing (BodyType, bodyTypeDecoder)
+module Data.Gooey.Attribute.BodyType exposing (BodyType, bodyTypeDecoder)
 
 import Json.Decode as Decode exposing (Decoder, field, map, oneOf, string, succeed)
 

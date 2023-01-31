@@ -1,6 +1,6 @@
-module Data.Age exposing (Age, ageDecoder)
+module Data.Gooey.Attribute.Age exposing (Age, ageDecoder)
 
-import Json.Decode as Decode exposing (Decoder, string, andThen, succeed)
+import Json.Decode as Decode exposing (Decoder, andThen, string, succeed)
 
 
 type Age

@@ -1,6 +1,6 @@
-module Data.Disposition exposing (Disposition, dispositionDecoder)
+module Data.Gooey.Attribute.Disposition exposing (Disposition, dispositionDecoder)
 
-import Json.Decode as Decode exposing (Decoder, string, andThen, succeed, fail)
+import Json.Decode as Decode exposing (Decoder, andThen, fail, string, succeed)
 
 
 type Disposition
